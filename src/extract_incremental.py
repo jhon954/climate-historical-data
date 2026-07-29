@@ -1,5 +1,6 @@
 import logging
-from config import LOCATIONS, START_DATE, END_DATE
+from datetime import date, timedelta
+from config import LOCATIONS
 from db import get_engine
 from weather_etl import process_location
 
@@ -9,13 +10,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+LOOKBACK_DAYS = 3
+
+
+def get_date_range():
+    """Return start and end date strings covering the last LOOKBACK_DAYS days."""
+    end_date = date.today() - timedelta(days=1)  # yesterday
+    start_date = end_date - timedelta(days=LOOKBACK_DAYS - 1)
+    return start_date.isoformat(), end_date.isoformat()
+
 
 def main():
+    start_date, end_date = get_date_range()
+    logger.info(f"Running incremental update for {start_date} to {end_date}")
+
     engine = get_engine()
     results = []
 
     for location in LOCATIONS:
-        result = process_location(location, START_DATE, END_DATE, engine)
+        result = process_location(location, start_date, end_date, engine)
         results.append(result)
 
     successes = [r for r in results if r["status"] == "success"]
