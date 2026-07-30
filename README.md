@@ -104,7 +104,3 @@ climate-historical-data/
 - Incorporate weather forecast data alongside historical records
 - Add data quality checks / alerting when the daily workflow fails
 - Explore Azure Functions or Cloud Functions as an alternative automation trigger
-
-## Author
-
-Built as a learning project to practice cloud databases, Python-based ETL, workflow automation, and BI reporting.
